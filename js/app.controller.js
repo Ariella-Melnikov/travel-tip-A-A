@@ -31,7 +31,9 @@ function onInit() {
       console.error("OOPs:", err)
       flashMsg("Cannot init map")
     })
+
 }
+
 
 function renderLocs(locs) {
   const selectedLocId = getLocIdFromQueryParams()
@@ -72,7 +74,7 @@ function renderLocs(locs) {
   elLocList.innerHTML = strHTML || "No locs to show"
 
   renderLocStats()
-//   renderLastUpdatedPieChart(locs)
+  renderLastUpdatedPieChart(locs)
 
   if (selectedLocId) {
     const selectedLoc = locs.find((loc) => loc.id === selectedLocId)
@@ -337,8 +339,54 @@ function cleanStats(stats) {
   return cleanedStats
 }
 
+function classifyByLastUpdated(locs) {
+    return new Promise((resolve, reject) => {
+      try {
+        const now = Date.now()
+        const oneDayMs = 24 * 60 * 60 * 1000
+  
+        const today = []
+        const past = []
+        const never = []
+  
+        locs.forEach((loc) => {
+          if (!loc.updatedAt || loc.updatedAt === loc.createdAt) {
+            never.push(loc)
+          } else if (now - loc.updatedAt < oneDayMs) {
+            today.push(loc)
+          } else {
+            past.push(loc)
+          }
+        })
+  
+        resolve({ today, past, never })
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
+  
+  function calculateStats(groups) {
+      return new Promise((resolve, reject) => {
+        try {
+          const stats = {
+            today: groups.today.length,
+            past: groups.past.length,
+            never: groups.never.length,
+            total: groups.today.length + groups.past.length + groups.never.length,
+          };
+          resolve(stats);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
+  
+
 function renderLastUpdatedPieChart(locs) {
-  const groups = locService.classifyByLastUpdated(locs)
-  const stats = locService.calculateStats(groups)
-  handleStats(stats, "last-updated-stats")
-}
+    return classifyByLastUpdated(locs)
+      .then((groups) => calculateStats(groups))
+      .then((stats) => handleStats(stats, 'last-updated-stats'))
+      .catch((error) => console.error('Error rendering pie chart:', error));
+  }
+

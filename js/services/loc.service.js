@@ -157,41 +157,50 @@ function _createLoc(loc) {
   return loc
 }
 
-function classifyByLastUpdated(locs) {
-  return new Promise((resolve, reject) => {
-    try {
-      const now = Date.now()
-      const oneDayMs = 24 * 60 * 60 * 1000
+// function classifyByLastUpdated(locs) {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       const now = Date.now()
+//       const oneDayMs = 24 * 60 * 60 * 1000
 
-      const today = []
-      const past = []
-      const never = []
+//       const today = []
+//       const past = []
+//       const never = []
 
-      locs.forEach((loc) => {
-        if (!loc.updatedAt || loc.updatedAt === loc.createdAt) {
-          never.push(loc)
-        } else if (now - loc.updatedAt < oneDayMs) {
-          today.push(loc)
-        } else {
-          past.push(loc)
-        }
-      })
+//       locs.forEach((loc) => {
+//         if (!loc.updatedAt || loc.updatedAt === loc.createdAt) {
+//           never.push(loc)
+//         } else if (now - loc.updatedAt < oneDayMs) {
+//           today.push(loc)
+//         } else {
+//           past.push(loc)
+//         }
+//       })
 
-      resolve({ today, past, never })
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
+//       resolve({ today, past, never })
+//     } catch (error) {
+//       reject(error)
+//     }
+//   })
+// }
 
-function calculateStats(groups) {
-  return {
-    today: groups.today.length,
-    past: groups.past.length,
-    never: groups.never.length
-    // total: groups.today.length + groups.past.length + groups.never.length
-  }
-}
+// function calculateStats(groups) {
+//     return new Promise((resolve, reject) => {
+//       try {
+//         const stats = {
+//           today: groups.today.length,
+//           past: groups.past.length,
+//           never: groups.never.length,
+//           total: groups.today.length + groups.past.length + groups.never.length,
+//         };
+//         resolve(stats);
+//       } catch (error) {
+//         reject(error);
+//       }
+//     });
+//   }
+
+
 
 // unused functions
 // function getEmptyLoc(name = '') {
