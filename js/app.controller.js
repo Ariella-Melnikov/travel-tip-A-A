@@ -1,6 +1,6 @@
-import { utilService } from "./services/util.service.js"
-import { locService } from "./services/loc.service.js"
-import { mapService } from "./services/map.service.js"
+import { utilService } from './services/util.service.js'
+import { locService } from './services/loc.service.js'
+import { mapService } from './services/map.service.js'
 
 window.onload = onInit
 
@@ -16,6 +16,7 @@ window.app = {
   onShareLoc,
   onSetSortBy,
   onSetFilterBy,
+  toggleTheme,
 }
 
 function onInit() {
@@ -28,31 +29,29 @@ function onInit() {
       mapService.addClickListener(onAddLoc)
     })
     .catch((err) => {
-      console.error("OOPs:", err)
-      flashMsg("Cannot init map")
+      console.error('OOPs:', err)
+      flashMsg('Cannot init map')
     })
-
 }
-
 
 function renderLocs(locs) {
   const selectedLocId = getLocIdFromQueryParams()
 
   var strHTML = locs
     .map((loc) => {
-      const className = loc.id === selectedLocId ? "active" : ""
+      const className = loc.id === selectedLocId ? 'active' : ''
       return `
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
                 <span>${loc.name}</span>
-                <span title="${loc.rate} stars">${"★".repeat(loc.rate)}</span>
+                <span title="${loc.rate} stars">${'★'.repeat(loc.rate)}</span>
             </h4>
             <p class="muted">
                 Created: ${utilService.elapsedTime(loc.createdAt)}
                 ${
                   loc.createdAt !== loc.updatedAt
                     ? ` | Updated: ${utilService.elapsedTime(loc.updatedAt)}`
-                    : ""
+                    : ''
                 }
             </p>
             <div class="loc-btns">     
@@ -68,10 +67,10 @@ function renderLocs(locs) {
             </div>     
         </li>`
     })
-    .join("")
+    .join('')
 
-  const elLocList = document.querySelector(".loc-list")
-  elLocList.innerHTML = strHTML || "No locs to show"
+  const elLocList = document.querySelector('.loc-list')
+  elLocList.innerHTML = strHTML || 'No locs to show'
 
   renderLocStats()
   renderLastUpdatedPieChart(locs)
@@ -80,46 +79,46 @@ function renderLocs(locs) {
     const selectedLoc = locs.find((loc) => loc.id === selectedLocId)
     displayLoc(selectedLoc)
   }
-  document.querySelector(".debug").innerText = JSON.stringify(locs, null, 2)
+  document.querySelector('.debug').innerText = JSON.stringify(locs, null, 2)
 }
 
 function onRemoveLoc(locId) {
-  const confirmation = confirm("Are you sure?")
+  const confirmation = confirm('Are you sure?')
   if (confirmation)
     locService
       .remove(locId)
       .then(() => {
-        flashMsg("Location removed")
+        flashMsg('Location removed')
         unDisplayLoc()
         loadAndRenderLocs()
       })
       .catch((err) => {
-        console.error("OOPs:", err)
-        flashMsg("Cannot remove location")
+        console.error('OOPs:', err)
+        flashMsg('Cannot remove location')
       })
 }
 
 function onSearchAddress(ev) {
   ev.preventDefault()
-  const el = document.querySelector("[name=address]")
+  const el = document.querySelector('[name=address]')
   mapService
     .lookupAddressGeo(el.value)
     .then((geo) => {
       mapService.panTo(geo)
     })
     .catch((err) => {
-      console.error("OOPs:", err)
-      flashMsg("Cannot lookup address")
+      console.error('OOPs:', err)
+      flashMsg('Cannot lookup address')
     })
 }
 
 function onAddLoc(geo) {
-  const locName = prompt("Loc name", geo.address || "Just a place")
+  const locName = prompt('Loc name', geo.address || 'Just a place')
   if (!locName) return
 
   const loc = {
     name: locName,
-    rate: +prompt(`Rate (1-5)`, "3"),
+    rate: +prompt(`Rate (1-5)`, '3'),
     geo,
   }
   locService
@@ -130,8 +129,8 @@ function onAddLoc(geo) {
       loadAndRenderLocs()
     })
     .catch((err) => {
-      console.error("OOPs:", err)
-      flashMsg("Cannot add location")
+      console.error('OOPs:', err)
+      flashMsg('Cannot add location')
     })
 }
 
@@ -140,8 +139,8 @@ function loadAndRenderLocs() {
     .query()
     .then(renderLocs)
     .catch((err) => {
-      console.error("OOPs:", err)
-      flashMsg("Cannot load locations")
+      console.error('OOPs:', err)
+      flashMsg('Cannot load locations')
     })
 }
 
@@ -155,14 +154,14 @@ function onPanToUserPos() {
       flashMsg(`You are at Latitude: ${latLng.lat} Longitude: ${latLng.lng}`)
     })
     .catch((err) => {
-      console.error("OOPs:", err)
-      flashMsg("Cannot get your position")
+      console.error('OOPs:', err)
+      flashMsg('Cannot get your position')
     })
 }
 
 function onUpdateLoc(locId) {
   locService.getById(locId).then((loc) => {
-    const rate = prompt("New rate?", loc.rate)
+    const rate = prompt('New rate?', loc.rate)
     if (rate !== loc.rate) {
       loc.rate = rate
       locService
@@ -172,8 +171,8 @@ function onUpdateLoc(locId) {
           loadAndRenderLocs()
         })
         .catch((err) => {
-          console.error("OOPs:", err)
-          flashMsg("Cannot update location")
+          console.error('OOPs:', err)
+          flashMsg('Cannot update location')
         })
     }
   })
@@ -184,67 +183,67 @@ function onSelectLoc(locId) {
     .getById(locId)
     .then(displayLoc)
     .catch((err) => {
-      console.error("OOPs:", err)
-      flashMsg("Cannot display this location")
+      console.error('OOPs:', err)
+      flashMsg('Cannot display this location')
     })
 }
 
 function displayLoc(loc) {
-  document.querySelector(".loc.active")?.classList?.remove("active")
-  document.querySelector(`.loc[data-id="${loc.id}"]`).classList.add("active")
+  document.querySelector('.loc.active')?.classList?.remove('active')
+  document.querySelector(`.loc[data-id="${loc.id}"]`).classList.add('active')
 
   mapService.panTo(loc.geo)
   mapService.setMarker(loc)
 
-  const el = document.querySelector(".selected-loc")
-  el.querySelector(".loc-name").innerText = loc.name
-  el.querySelector(".loc-address").innerText = loc.geo.address
-  el.querySelector(".loc-rate").innerHTML = "★".repeat(loc.rate)
-  el.querySelector("[name=loc-copier]").value = window.location
-  el.classList.add("show")
+  const el = document.querySelector('.selected-loc')
+  el.querySelector('.loc-name').innerText = loc.name
+  el.querySelector('.loc-address').innerText = loc.geo.address
+  el.querySelector('.loc-rate').innerHTML = '★'.repeat(loc.rate)
+  el.querySelector('[name=loc-copier]').value = window.location
+  el.classList.add('show')
 
   utilService.updateQueryParams({ locId: loc.id })
 }
 
 function unDisplayLoc() {
-  utilService.updateQueryParams({ locId: "" })
-  document.querySelector(".selected-loc").classList.remove("show")
+  utilService.updateQueryParams({ locId: '' })
+  document.querySelector('.selected-loc').classList.remove('show')
   mapService.setMarker(null)
 }
 
 function onCopyLoc() {
-  const elCopy = document.querySelector("[name=loc-copier]")
+  const elCopy = document.querySelector('[name=loc-copier]')
   elCopy.select()
   elCopy.setSelectionRange(0, 99999) // For mobile devices
   navigator.clipboard.writeText(elCopy.value)
-  flashMsg("Link copied, ready to paste")
+  flashMsg('Link copied, ready to paste')
 }
 
 function onShareLoc() {
-  const url = document.querySelector("[name=loc-copier]").value
+  const url = document.querySelector('[name=loc-copier]').value
 
   // title and text not respected by any app (e.g. whatsapp)
   const data = {
-    title: "Cool location",
-    text: "Check out this location",
+    title: 'Cool location',
+    text: 'Check out this location',
     url,
   }
   navigator.share(data)
 }
 
 function flashMsg(msg) {
-  const el = document.querySelector(".user-msg")
+  const el = document.querySelector('.user-msg')
   el.innerText = msg
-  el.classList.add("open")
+  el.classList.add('open')
   setTimeout(() => {
-    el.classList.remove("open")
+    el.classList.remove('open')
   }, 3000)
 }
 
 function getFilterByFromQueryParams() {
   const queryParams = new URLSearchParams(window.location.search)
-  const txt = queryParams.get("txt") || ""
-  const minRate = queryParams.get("minRate") || 0
+  const txt = queryParams.get('txt') || ''
+  const minRate = queryParams.get('minRate') || 0
   locService.setFilterBy({ txt, minRate })
 
   document.querySelector('input[name="filter-by-txt"]').value = txt
@@ -253,13 +252,13 @@ function getFilterByFromQueryParams() {
 
 function getLocIdFromQueryParams() {
   const queryParams = new URLSearchParams(window.location.search)
-  const locId = queryParams.get("locId")
+  const locId = queryParams.get('locId')
   return locId
 }
 
 function onSetSortBy() {
-  const prop = document.querySelector(".sort-by").value
-  const isDesc = document.querySelector(".sort-desc").checked
+  const prop = document.querySelector('.sort-by').value
+  const isDesc = document.querySelector('.sort-desc').checked
 
   if (!prop) return
 
@@ -283,7 +282,7 @@ function onSetFilterBy({ txt, minRate }) {
 
 function renderLocStats() {
   locService.getLocCountByRateMap().then((stats) => {
-    handleStats(stats, "loc-stats-rate")
+    handleStats(stats, 'loc-stats-rate')
   })
 }
 
@@ -323,7 +322,7 @@ function handleStats(stats, selector) {
                 </li>
             `
     })
-    .join("")
+    .join('')
 
   const elLegend = document.querySelector(`.${selector} .legend`)
   elLegend.innerHTML = ledendHTML
@@ -331,7 +330,7 @@ function handleStats(stats, selector) {
 
 function cleanStats(stats) {
   const cleanedStats = Object.keys(stats).reduce((acc, label) => {
-    if (label !== "total" && stats[label]) {
+    if (label !== 'total' && stats[label]) {
       acc.push(label)
     }
     return acc
@@ -340,53 +339,58 @@ function cleanStats(stats) {
 }
 
 function classifyByLastUpdated(locs) {
-    return new Promise((resolve, reject) => {
-      try {
-        const now = Date.now()
-        const oneDayMs = 24 * 60 * 60 * 1000
-  
-        const today = []
-        const past = []
-        const never = []
-  
-        locs.forEach((loc) => {
-          if (!loc.updatedAt || loc.updatedAt === loc.createdAt) {
-            never.push(loc)
-          } else if (now - loc.updatedAt < oneDayMs) {
-            today.push(loc)
-          } else {
-            past.push(loc)
-          }
-        })
-  
-        resolve({ today, past, never })
-      } catch (error) {
-        reject(error)
-      }
-    })
-  }
-  
-  function calculateStats(groups) {
-      return new Promise((resolve, reject) => {
-        try {
-          const stats = {
-            today: groups.today.length,
-            past: groups.past.length,
-            never: groups.never.length,
-            total: groups.today.length + groups.past.length + groups.never.length,
-          };
-          resolve(stats);
-        } catch (error) {
-          reject(error);
+  return new Promise((resolve, reject) => {
+    try {
+      const now = Date.now()
+      const oneDayMs = 24 * 60 * 60 * 1000
+
+      const today = []
+      const past = []
+      const never = []
+
+      locs.forEach((loc) => {
+        if (!loc.updatedAt || loc.updatedAt === loc.createdAt) {
+          never.push(loc)
+        } else if (now - loc.updatedAt < oneDayMs) {
+          today.push(loc)
+        } else {
+          past.push(loc)
         }
-      });
+      })
+
+      resolve({ today, past, never })
+    } catch (error) {
+      reject(error)
     }
-  
+  })
+}
+
+function calculateStats(groups) {
+  return new Promise((resolve, reject) => {
+    try {
+      const stats = {
+        today: groups.today.length,
+        past: groups.past.length,
+        never: groups.never.length,
+        total: groups.today.length + groups.past.length + groups.never.length,
+      }
+      resolve(stats)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 function renderLastUpdatedPieChart(locs) {
-    return classifyByLastUpdated(locs)
-      .then((groups) => calculateStats(groups))
-      .then((stats) => handleStats(stats, 'last-updated-stats'))
-      .catch((error) => console.error('Error rendering pie chart:', error));
-  }
+  return classifyByLastUpdated(locs)
+    .then((groups) => calculateStats(groups))
+    .then((stats) => handleStats(stats, 'last-updated-stats'))
+    .catch((error) => console.error('Error rendering pie chart:', error))
+}
 
+function toggleTheme() {
+  console.log('theme selector')
+
+  const mainContent = document.querySelector('.main-content')
+  mainContent.classList.toggle('theme-alternate')
+}
