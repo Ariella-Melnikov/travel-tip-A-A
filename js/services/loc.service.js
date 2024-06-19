@@ -1,24 +1,24 @@
-import { utilService } from "./util.service.js"
-import { storageService } from "./async-storage.service.js"
+import { utilService } from './util.service.js'
+import { storageService } from './async-storage.service.js'
 
-const sampleLoc = {
-  id: "GEouN",
-  name: "Dahab, Egypt",
-  rate: 5,
-  geo: {
-    address: "Dahab, South Sinai, Egypt",
-    lat: 28.5096676,
-    lng: 34.5165187,
-    zoom: 11,
-  },
-  createdAt: 1706562160181,
-  updatedAt: 1706562160181,
-}
+// const sampleLoc = {
+//     id: 'GEouN',
+//     name: 'Dahab, Egypt',
+//     rate: 5,
+//     geo: {
+//         address: 'Dahab, South Sinai, Egypt',
+//         lat: 28.5096676,
+//         lng: 34.5165187,
+//         zoom: 11
+//     },
+//     createdAt: 1706562160181,
+//     updatedAt: 1706562160181
+// }
 
 const PAGE_SIZE = 5
-const DB_KEY = "locs"
+const DB_KEY = 'locs'
 var gSortBy = { rate: -1 }
-var gFilterBy = { txt: "", minRate: 0 }
+var gFilterBy = { txt: '', minRate: 0 }
 var gPageIdx
 
 _createLocs()
@@ -36,7 +36,7 @@ export const locService = {
 function query() {
   return storageService.query(DB_KEY).then((locs) => {
     if (gFilterBy.txt) {
-      const regex = new RegExp(gFilterBy.txt, "i")
+      const regex = new RegExp(gFilterBy.txt, 'i')
       locs = locs.filter((loc) => regex.test(loc.name))
     }
     if (gFilterBy.minRate) {
@@ -114,30 +114,30 @@ function _createLocs() {
 function _createDemoLocs() {
   var locs = [
     {
-      name: "Ben Gurion Airport",
+      name: 'Ben Gurion Airport',
       rate: 2,
       geo: {
-        address: "Ben Gurion Airport, 7015001, Israel",
+        address: 'Ben Gurion Airport, 7015001, Israel',
         lat: 32.0004465,
         lng: 34.8706095,
         zoom: 12,
       },
     },
     {
-      name: "Dekel Beach",
+      name: 'Dekel Beach',
       rate: 4,
       geo: {
-        address: "Derekh Mitsrayim 1, Eilat, 88000, Israel",
+        address: 'Derekh Mitsrayim 1, Eilat, 88000, Israel',
         lat: 29.5393848,
         lng: 34.9457792,
         zoom: 15,
       },
     },
     {
-      name: "Dahab, Egypt",
+      name: 'Dahab, Egypt',
       rate: 5,
       geo: {
-        address: "Dahab, South Sinai, Egypt",
+        address: 'Dahab, South Sinai, Egypt',
         lat: 28.5096676,
         lng: 34.5165187,
         zoom: 11,
@@ -154,51 +154,6 @@ function _createLoc(loc) {
   loc.createdAt = loc.updatedAt = utilService.randomPastTime()
   return loc
 }
-
-// function classifyByLastUpdated(locs) {
-//   return new Promise((resolve, reject) => {
-//     try {
-//       const now = Date.now()
-//       const oneDayMs = 24 * 60 * 60 * 1000
-
-//       const today = []
-//       const past = []
-//       const never = []
-
-//       locs.forEach((loc) => {
-//         if (!loc.updatedAt || loc.updatedAt === loc.createdAt) {
-//           never.push(loc)
-//         } else if (now - loc.updatedAt < oneDayMs) {
-//           today.push(loc)
-//         } else {
-//           past.push(loc)
-//         }
-//       })
-
-//       resolve({ today, past, never })
-//     } catch (error) {
-//       reject(error)
-//     }
-//   })
-// }
-
-// function calculateStats(groups) {
-//     return new Promise((resolve, reject) => {
-//       try {
-//         const stats = {
-//           today: groups.today.length,
-//           past: groups.past.length,
-//           never: groups.never.length,
-//           total: groups.today.length + groups.past.length + groups.never.length,
-//         };
-//         resolve(stats);
-//       } catch (error) {
-//         reject(error);
-//       }
-//     });
-//   }
-
-
 
 // unused functions
 // function getEmptyLoc(name = '') {
