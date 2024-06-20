@@ -8,7 +8,7 @@ export const mapService = {
 }
 
 // TODO: Enter your API Key
-const API_KEY = 'AIzaSyByDmWdHHyGAmNjuJm4B0vV5da-_0WQRU4'
+const API_KEY = ''
 var gMap
 var gMarker
 
@@ -30,12 +30,10 @@ function panTo({ lat, lng, zoom = 15 }) {
 function lookupAddressGeo(geoOrAddress) {
   // Sample URLs:
   // const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}`
-  // const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452`
+  // const url = `https://maps.googleapis.com/maps/api/geocode/json?key=${API_KEY}&latlng=40.714224,-73.961452`
 
   var url = `https://maps.googleapis.com/maps/api/geocode/json?key=${API_KEY}&`
-  url += geoOrAddress.lat
-    ? `latlng=${geoOrAddress.lat},${geoOrAddress.lng}`
-    : `address=${geoOrAddress}`
+  url += (geoOrAddress.lat)? `latlng=${geoOrAddress.lat},${geoOrAddress.lng}`: `address=${geoOrAddress}`
 
   return fetch(url)
     .then((res) => res.json())

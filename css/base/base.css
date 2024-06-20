@@ -18,6 +18,9 @@ input[type=text],input[type=number] {
     line-height: 2em;
     background-color: var(--color1);
     border: 0;
+    /* margin-bottom: 1em;
+    width: 100%;
+    padding: 0.5em; */
 }
 
 button {

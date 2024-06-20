@@ -21,7 +21,7 @@
           <button onclick="app.onShareLoc()">Share location</button>
           <input name="loc-copier" />
         </section>
-        <button id="theme-switcher" onclick="app.toggleTheme()">
+        <button id="theme-switcher" onclick="app.onChangeTheme()">
           Switch Theme
         </button>
         <form class="form-search" onsubmit="app.onSearchAddress(event)">
@@ -99,9 +99,27 @@
           </section>
         </div>
       </main>
+
+      <dialog class="modal">
+        <form onsubmit="app.onSubmit(event)" method="dialog">  
+          <header>
+            <h5 class="modal-title">title</h5>
+            <button type="button" onclick="app.onCloseModal()">X</button>
+          </header>
+            <input class="name-input" type="text" placeholder="name">
+            <input class="rate-input" type="text" placeholder="rate">
+            <button >Submit</button>
+            
+        </form>
+    </dialog>
+    
     </div>
+
+
     <pre class="debug" hidden></pre>
     <div class="user-msg"></div>
+
+
     <script type="module" src="js/app.controller.js"></script>
   </body>
 </html>
